@@ -1,13 +1,26 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { createStackNavigator } from 'react-navigation';
 
-import Login from './components/Login';
+import LoginScreen from './components/LoginScreen';
+import DashboardScreen from './components/dashboard/DashboardScreen';
+
+const RootStack = createStackNavigator(
+  {
+    Login: {screen: LoginScreen},
+    Dashboard: {screen: DashboardScreen}
+  },
+  {
+    initialRouteName: 'Dashboard',
+    headerMode: 'none'
+  }
+);
 
 export default class App extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Login></Login>
+        <RootStack />
       </View>
     );
   }
@@ -16,6 +29,5 @@ export default class App extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f0f2a4',
   },
 });
