@@ -11,7 +11,7 @@ const RootStack = createStackNavigator(
     Dashboard: {screen: DashboardScreen}
   },
   {
-    initialRouteName: 'Dashboard',
+    initialRouteName: 'Login',
     headerMode: 'none'
   }
 );

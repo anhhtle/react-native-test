@@ -10,6 +10,10 @@ export default class DashboardScreen extends React.Component {
                 <View style={styles.sectionOne}>
                     <Text style={{fontSize: 20, color: '#fff',}}>Your Balance</Text>
                     <Text style={{fontSize: 24, color: '#f0f2a4'}}>$1,000</Text>
+
+                    <TouchableOpacity style={styles.button} onPress={() => {this._onSignInPress()}}>
+                        <Text style={{fontSize: 18, color: '#fff'}}>1 Active Bet</Text>
+                    </TouchableOpacity>
                 </View>
 
                 {/* section 2 */}
@@ -40,7 +44,21 @@ export default class DashboardScreen extends React.Component {
                             </View>
                         </View>
                     </TouchableOpacity>
+
                 </View>
+
+                {/* Partner section */}
+                <View style={styles.sectionThree}>
+                    <Text style={styles.partnerText}>10% of commissions are donated</Text>
+                    <View style={styles.partnerImageContainer}>
+                        <Image 
+                            style={styles.partnerImage}
+                            source={{uri: 'https://upload.wikimedia.org/wikipedia/en/thumb/7/7f/American_Red_Cross_logo.svg/1200px-American_Red_Cross_logo.svg.png'}}
+                            resizeMode="contain"
+                        />
+                    </View>
+                </View>
+
             </View>
         );
     }
@@ -60,13 +78,15 @@ const styles = StyleSheet.create({
     },
     button: {
         marginTop: 10,
-        padding: 5,
+        padding: 10,
         alignItems: 'center',
-        backgroundColor: 'steelblue',
+        backgroundColor: '#4285f4',
         borderRadius: 10
     },
     sectionTwo: {
-        flex: 3,
+        flex: 4,
+        flexWrap: 'wrap',
+        flexDirection: 'row',
         padding: 30,
         // backgroundColor: '#57585b',
         backgroundColor: '#f0f2a4',
@@ -96,4 +116,36 @@ const styles = StyleSheet.create({
         borderWidth: 0.5,
         borderColor: '#d6d7da',
     },
+    sectionThree: {
+        flex: 1,
+        backgroundColor: '#f0f2a4',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingLeft: 50,
+        paddingRight: 50,
+        paddingBottom: 40
+    },
+    partnerImageContainer: {
+        backgroundColor: '#fff',
+        flex: 0.6,
+        width: 200,
+        borderRadius: 10,
+        shadowColor: '#000',
+        shadowOffset: { width: 2, height: 1 },
+        shadowOpacity: 0.5,
+        shadowRadius: 1,
+    },
+    partnerText: {
+        flex: 0.4,
+        fontSize: 16,
+        textAlign: 'center',
+        color: '#AC3931'
+    },
+    partnerImage: {
+        flex: 1,
+        margin: 10,
+        alignSelf: 'stretch',
+        width: undefined,
+        height: undefined,
+    }
 });
