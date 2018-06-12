@@ -7,7 +7,10 @@ export default class DashboardScreen extends React.Component {
         return (
             <View style={styles.container}>
                 {/* section 1 */}
-                <View style={styles.sectionOne}></View>
+                <View style={styles.sectionOne}>
+                    <Text style={{fontSize: 20, color: '#fff',}}>Your Balance</Text>
+                    <Text style={{fontSize: 24, color: '#f0f2a4'}}>$1,000</Text>
+                </View>
 
                 {/* section 2 */}
                 <View style={styles.sectionTwo}>
@@ -49,15 +52,24 @@ const styles = StyleSheet.create({
     },
     sectionOne: {
         flex: 1,
-        padding: 30,
-        // backgroundColor: '#57585b',
-        backgroundColor: '#f0f2a4',
+        padding: 50,
+        backgroundColor: '#57585b',
+        // backgroundColor: '#f0f2a4',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    button: {
+        marginTop: 10,
+        padding: 5,
+        alignItems: 'center',
+        backgroundColor: 'steelblue',
+        borderRadius: 10
     },
     sectionTwo: {
         flex: 3,
         padding: 30,
-        // backgroundColor: '#f0f2a4',
-        backgroundColor: '#57585b',
+        // backgroundColor: '#57585b',
+        backgroundColor: '#f0f2a4',
         flexDirection: 'row',
         justifyContent: 'space-between'
     },
