@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, AsyncStorage } from 'react-native';
 
 
 export default class LoginScreen extends React.Component {
@@ -23,27 +23,116 @@ export default class LoginScreen extends React.Component {
         }
     }
 
+    async getStorageEmail() {
+        try {
+            let email = await AsyncStorage.getItem('email', null);
+            if (email !== null) {
+                this.setState({email})
+            } else {
+                console.log('no email saved in storage');
+            }
+        } catch (error) {
+            console.log(error);
+        } 
+    }
+
     onSubmit() {
-        console.log(this.state);
         if (this.state.LoginOrSignUp === 'Login') {
-            this.props.navigation.navigate('Dashboard');
+            if (this.state.email === '' || this.state.password === '') {
+                this.setState({showErrorMessage: true, errorMessage: 'Please fill out all fields'});
+            } else {
+                this.loginClient();
+            }
         } else {
             if (this.state.first_name === '' || this.state.email === '' || this.state.password === '') {
                 this.setState({showErrorMessage: true, errorMessage: 'Please fill out all fields'});
-            } else if (!this.validateEmail) {
-                this.setState({showErrorMessage: true, errorMessage: 'Please fill out all fields'});
+            } else if (!this.validateEmail()) {
+                this.setState({showErrorMessage: true, errorMessage: 'Please enter a valid email'});
+            } else {
+                this.createClient();
             }
         }
+    }
+    
+    loginClient() {
+        let data = {
+            email: this.state.email,
+            password: this.state.password
+        };
+    
+        fetch('http://laravel-api.test/api/client/login', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then((response) => {
+            if (response.status === 404) {
+                throw 404;
+            }
+            return response.json()
+        })
+        .then((responseJson) => {
+            
+
+            AsyncStorage.setItem('email', responseJson.data.email);
+            this.props.navigation.navigate('Dashboard', {client: responseJson.data});
+        })
+        .catch((error) => {
+            if (error === 404) {
+                this.setState({showErrorMessage: true, errorMessage: 'User not found'});
+            } else {
+                console.log(error);
+            }
+        });
+    }
+    
+    createClient() {
+        let data = {
+            firstName: this.state.first_name,
+            email: this.state.email,
+            password: this.state.password
+        }
+    
+        fetch('http://laravel-api.test/api/client/', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-type': 'application/json'
+              },
+            body: JSON.stringify(data)
+        })
+        .then((response) => {
+            if (response.status === 409) {
+                // duplicate email
+                throw 409;
+            }
+            return response.json()
+        })
+        .then((responseJson) => {
+            // console.log(responseJson);
+
+            
+            AsyncStorage.setItem('email', responseJson.data.email);
+            this.props.navigation.navigate('Dashboard', {client: responseJson.data});
+        })
+        .catch((error) => {
+            if (error === 409) {
+                this.setState({showErrorMessage: true, errorMessage: 'Email already registered'});
+            } else {
+                console.error(error);
+            }
+        });
     }
 
     validateEmail() {
         let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
 
         if (reg.test(this.state.email) === false) {
-            console.log("Email is Not Correct");
             return false;
         } else {
-            console.log("Email is Correct");
             return true;
         }
     }
@@ -75,8 +164,8 @@ export default class LoginScreen extends React.Component {
                 <View style={{flex: 0.4}}>
                     {this.renderSignUpError()}
                     {this.renderNameInput()}
-                    <TextInput style={styles.textInput} onChangeText={(email) => this.setState({email})} placeholder='Email' keyboardType='email-address'/>
-                    <TextInput style={styles.textInput} onChangeText={(password) => this.setState({password})} placeholder='Password' secureTextEntry={true}/>
+                    <TextInput style={styles.textInput} onChangeText={(email) => this.setState({email})} placeholder='Email' value={this.state.email} keyboardType='email-address'/>
+                    <TextInput style={styles.textInput} onChangeText={(password) => this.setState({password})} value={this.state.password} placeholder='Password' secureTextEntry={true}/>
 
                     <TouchableOpacity style={styles.button} onPress={() => {this.onSubmit()}}>
                         <Text style={{fontSize: 20, color: '#fff'}}>{this.state.LoginOrSignUp}</Text>
@@ -91,6 +180,10 @@ export default class LoginScreen extends React.Component {
 
             </View>
         );
+    }
+
+    componentDidMount() {
+        this.getStorageEmail();
     }
 }
 

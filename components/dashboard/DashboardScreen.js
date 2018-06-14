@@ -1,8 +1,14 @@
 import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
-import { createStackNavigator } from 'react-navigation';
 
 export default class DashboardScreen extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            client: {},
+        }
+    }
+
     render() {
         return (
             <View style={styles.container}>
@@ -61,6 +67,15 @@ export default class DashboardScreen extends React.Component {
 
             </View>
         );
+    }
+
+    componentDidMount() {
+        const { navigation } = this.props;
+        this.setState({client: navigation.getParam('client')})
+
+        setTimeout(() => {
+            console.log(this.state.client);
+        }, 1000);
     }
 }
 
