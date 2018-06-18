@@ -15,7 +15,7 @@ export default class DashboardScreen extends React.Component {
                 {/* section 1 */}
                 <View style={styles.sectionOne}>
                     <Text style={{fontSize: 20, color: '#fff',}}>Your Balance</Text>
-                    <Text style={{fontSize: 24, color: '#f0f2a4'}}>$1,000</Text>
+                    <Text style={{fontSize: 24, color: '#f0f2a4'}}>{new Intl.NumberFormat().format(this.state.user.balance)}</Text>
 
                     <TouchableOpacity style={styles.button} onPress={() => {this._onSignInPress()}}>
                         <Text style={{fontSize: 18, color: '#fff'}}>1 Active Bet</Text>
@@ -71,7 +71,19 @@ export default class DashboardScreen extends React.Component {
 
     componentDidMount() {
         const { navigation } = this.props;
-        this.setState({user: navigation.getParam('user')})
+
+        if (navigation.getParam('user')) {
+            this.setState({user: navigation.getParam('user')})
+        } else {
+            const testData = {
+                first_name: 'test',
+                email: 'test@gmail.com',
+                password: 'password',
+                balance: '1234.56'
+            };
+
+            this.setState({user: testData});
+        }
 
         setTimeout(() => {
             console.log(this.state.user);
