@@ -41,7 +41,7 @@ export default class LoginScreen extends React.Component {
             if (this.state.email === '' || this.state.password === '') {
                 this.setState({showErrorMessage: true, errorMessage: 'Please fill out all fields'});
             } else {
-                this.loginClient();
+                this.loginUser();
             }
         } else {
             if (this.state.first_name === '' || this.state.email === '' || this.state.password === '') {
@@ -49,18 +49,18 @@ export default class LoginScreen extends React.Component {
             } else if (!this.validateEmail()) {
                 this.setState({showErrorMessage: true, errorMessage: 'Please enter a valid email'});
             } else {
-                this.createClient();
+                this.createUser();
             }
         }
     }
     
-    loginClient() {
+    loginUser() {
         let data = {
             email: this.state.email,
             password: this.state.password
         };
     
-        fetch('http://laravel-api.test/api/client/login', {
+        fetch('http://laravel-api.test/api/user/login', {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
@@ -78,7 +78,7 @@ export default class LoginScreen extends React.Component {
             
 
             AsyncStorage.setItem('email', responseJson.data.email);
-            this.props.navigation.navigate('Dashboard', {client: responseJson.data});
+            this.props.navigation.navigate('Dashboard', {user: responseJson.data});
         })
         .catch((error) => {
             if (error === 404) {
@@ -89,14 +89,14 @@ export default class LoginScreen extends React.Component {
         });
     }
     
-    createClient() {
+    createUser() {
         let data = {
             firstName: this.state.first_name,
             email: this.state.email,
             password: this.state.password
         }
     
-        fetch('http://laravel-api.test/api/client/', {
+        fetch('http://laravel-api.test/api/user/', {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
@@ -116,7 +116,7 @@ export default class LoginScreen extends React.Component {
 
             
             AsyncStorage.setItem('email', responseJson.data.email);
-            this.props.navigation.navigate('Dashboard', {client: responseJson.data});
+            this.props.navigation.navigate('Dashboard', {user: responseJson.data});
         })
         .catch((error) => {
             if (error === 409) {

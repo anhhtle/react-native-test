@@ -5,7 +5,7 @@ export default class DashboardScreen extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            client: {},
+            user: {},
         }
     }
 
@@ -71,10 +71,10 @@ export default class DashboardScreen extends React.Component {
 
     componentDidMount() {
         const { navigation } = this.props;
-        this.setState({client: navigation.getParam('client')})
+        this.setState({user: navigation.getParam('user')})
 
         setTimeout(() => {
-            console.log(this.state.client);
+            console.log(this.state.user);
         }, 1000);
     }
 }
