@@ -4,14 +4,16 @@ import { createStackNavigator } from 'react-navigation';
 
 import LoginScreen from './components/LoginScreen';
 import DashboardScreen from './components/dashboard/DashboardScreen';
+import MmaScreen from './components/mma/MmaScreen';
 
 const RootStack = createStackNavigator(
   {
     Login: {screen: LoginScreen},
-    Dashboard: {screen: DashboardScreen}
+    Dashboard: {screen: DashboardScreen},
+    Mma: {screen: MmaScreen}
   },
   {
-    initialRouteName: 'Dashboard',
+    initialRouteName: 'Mma',
     headerMode: 'none'
   }
 );
