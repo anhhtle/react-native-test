@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, ListView, Text, Image, TouchableOpacity, TouchableHighlight, Modal } from 'react-native';
+import { StyleSheet, View, ListView, Text, Image, TouchableOpacity, TouchableHighlight, Modal, TextInput } from 'react-native';
 
 export default class MmaScreen extends React.Component {
     constructor() {
@@ -7,6 +7,12 @@ export default class MmaScreen extends React.Component {
         this.state = {
             dataSource: [],
             modalVisible: false,
+            modalEvent: {},
+            modalFighterNumber: null,
+            modalFighterName: '',
+            modalFighterOdd: null,
+            risk: '10.00',
+            winning: null,
         };
     }
     
@@ -22,6 +28,32 @@ export default class MmaScreen extends React.Component {
         return date + ' ' + time;
     }
 
+    showModal(event, fighterNumber) {
+        let fighterName, fighterOdd;
+
+        fighterName = fighterNumber === 1 ? event.fighter_one : event.fighter_two;
+        fighterOdd = fighterNumber === 1 ? event.fighter_one_odd : event.fighter_two_odd;
+
+        this.setState({modalVisible: true, modalEvent: event, modalFighterNumber: fighterNumber, modalFighterName: fighterName, modalFighterOdd: fighterOdd});
+    }
+
+    handleRiskInput(text) {
+        // this.setState({text});
+
+        // let newText = '';
+        // let numbers = '0123456789';
+
+        // for (var i = 0; i < text.length; i++) {
+        //     if ( numbers.indexOf(text[i]) > -1 ) {
+        //         newText = newText + text[i];
+        //     }
+        // }   
+        // this.setState({risk: newText})
+        // console.log(newText);
+
+        console.log(text)
+    }
+
     render() {
         return (
             <View style={styles.container}>
@@ -29,17 +61,42 @@ export default class MmaScreen extends React.Component {
                     animationType="fade"
                     transparent={true}
                     visible={this.state.modalVisible}
-                    onRequestClose={() => { alert('Modal has been closed.');}}
                     >
 
                     <View style={styles.modalOverlay}>
                         <View style={styles.modal}>
-                            <Text>Hello World!</Text>
+                            <Text style={styles.title}>{this.state.modalEvent.event_title}</Text>
+                            <View style={styles.modalFighter}>
+                                <Text style={styles.fighterText}>{this.state.modalFighterName}</Text>
+                                <Text style={styles.fighterText}>{this.state.modalFighterOdd}</Text>
+                            </View>
 
                             <TouchableHighlight onPress={() => { this.setState({modalVisible: false}) }} >
                                 <Text>Hide Modal</Text>
                             </TouchableHighlight>
                         </View>
+
+                        <View style={styles.form}>
+                            <View style={{flex: 1, marginRight: 5}}>
+                                <Text style={{marginBottom: 5}}>Risk</Text>
+                                <TextInput 
+                                    style={styles.riskInput}
+                                    keyboardType='numeric'
+                                    onChange={(text) => this.handleRiskInput(text)}
+                                    // value={this.state.risk}
+                                />
+                            </View>
+
+                            <View style={{flex: 1}}>
+                                <Text style={{marginBottom: 5}}>Winning</Text>
+                                <TextInput 
+                                    style={styles.winningInput}
+                                    editable={false}
+                                    value={this.state.risk}
+                                />
+                            </View>
+                        </View>
+
                     </View>
 
                 </Modal>
@@ -58,12 +115,12 @@ export default class MmaScreen extends React.Component {
                                 <Text style={styles.time}>{this.formatDate(rowData.time)}</Text>
 
                                 <View style={styles.touchableContainer}>
-                                    <TouchableOpacity style={styles.touchable} onPress={() => { this.setState({modalVisible: true}) }}>
+                                    <TouchableOpacity style={styles.touchable} onPress={() => { this.showModal(rowData, 1) }}>
                                         <Text style={styles.fighterText}>{rowData.fighter_one}</Text>
                                         <Text style={styles.fighterText}>{rowData.fighter_one_odd >= 0 ? '+' + rowData.fighter_one_odd : rowData.fighter_one_odd}</Text>
                                     </TouchableOpacity>
 
-                                    <TouchableOpacity style={styles.touchable} onPress={() => { this.setState({modalVisible: true}) }}>
+                                    <TouchableOpacity style={styles.touchable} onPress={() => { this.showModal(rowData, 2) }}>
                                         <Text style={styles.fighterText}>{rowData.fighter_two}</Text>
                                         <Text style={styles.fighterText}>{rowData.fighter_two_odd >= 0 ? '+' + rowData.fighter_two_odd : rowData.fighter_two_odd}</Text>
                                     </TouchableOpacity>
@@ -106,6 +163,10 @@ export default class MmaScreen extends React.Component {
         ];
 
         this.setState({dataSource: testData});
+
+        // setTimeout(() => {
+        //     console.log(this.state.dataSource[0]['event_title']);
+        // }, 400);
     }
 }
 
@@ -165,7 +226,8 @@ const styles = new StyleSheet.create({
         fontSize: 12,
     },
     title: {
-        fontSize: 12
+        fontSize: 12,
+        marginBottom: 5
     },
     modalOverlay: {
         paddingTop: 100,
@@ -176,5 +238,35 @@ const styles = new StyleSheet.create({
     },
     modal: {
         backgroundColor: '#fff',
+        padding: 10,
+    },
+    modalFighter: {
+        backgroundColor: '#388697',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        padding: 5
+    },
+    form: {
+        flexDirection: 'row',
+        backgroundColor: '#f0f2a4',
+        padding: 10,
+    },
+    riskInput: {
+        backgroundColor: '#fff',
+        width: 100,
+        padding: 5,
+        color: '#000',
+        borderWidth: 1,
+        borderColor: '#000',
+        textAlign: 'right',
+    },
+    winningInput: {
+        backgroundColor: 'lightgrey',
+        width: 100,
+        padding: 5,
+        color: '#000',
+        borderWidth: 1,
+        borderColor: '#000',
+        textAlign: 'right',
     }
 });
